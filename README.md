@@ -1,13 +1,12 @@
 Getting Started on Raspberry Pi
 ===============================
 
-This document explains how to set up the Stc3x sensor to run on a Raspberry Pi
+This document explains how to set up the STC3x sensor to run on a Raspberry Pi
 using the provided code.
 
-TODO: DRIVER_GENERATOR Add picture of sensor to images/Stc3x.png
-[<center><img src="images/Stc3x.png" width="300px"></center>](TODO: DRIVER_GENERATOR Add evaluation kit URL)
+[<center><img src="images/Stc3x.png" width="300px"></center>](https://www.sensirion.com/en/environmental-sensors/carbon-dioxide-sensors/co2-sensor-stc31-coming-soon/)
 
-Click [here](TODO: DRIVER_GENERATOR Add evaluation kit URL) to learn more about the SCD4x Sensor and the SCD41 Evaluation Kit Board.
+Click [here](https://www.sensirion.com/en/environmental-sensors/carbon-dioxide-sensors/co2-sensor-stc31-coming-soon/) to learn more about the STC3x Sensor.
 
 
 Setup Guide
@@ -15,18 +14,25 @@ Setup Guide
 
 ### Connecting the Sensor
 
-Your sensor has the four different connectors: VCC, GND, SDA, SCL, SEL. Use
-the following pins to connect your Stc3x:
+We'll be using the following pins of your sensor: VCC, GND, SDA and SCL.
 
- *Stc3x*  |    *Raspberry Pi*
+Refer to the [datasheet](https://www.sensirion.com/fileadmin/user_upload/customers/sensirion/Dokumente/12_Thermal_Conductivity/Datasheets/Sensirion_Thermal_Conductivity_Datasheet_STC31_D1.pdf)
+
+If you're using the STC3x Evaluaton Kit with the sensor soldered to a Flex PCB, the pinout is as follows:
+
+<center><img src="images/FlexPinout.png" width="400px"></center>
+
+Use the following schema to connect your STC3x:
+
+ *STC3x*  |    *Raspberry Pi*
  :------: | :------------------:
    VCC    |        Pin 1
    GND    |        Pin 6
    SDA    |        Pin 3
    SCL    |        Pin 5
-   SEL    |        Pin 9 TODO: DRIVER_GENERATOR Check if this applies
 
 <center><img src="images/GPIO-Pinout-Diagram.png" width="900px"></center>
+
 
 ### Raspberry Pi
 
@@ -50,7 +56,13 @@ the following pins to connect your Stc3x:
 
       Output:
       ```
-      TODO: DRIVER_GENERATOR Add sensor output
+      Product Number: 0x08010301
+      Serial Number: 3617857464944295936
+      Self Test: 0x0000 (OK = 0x0000)
+      Set binary gas to 0x0001
+      Gas: -0.921631 - Temperature: 24.610001
+      Gas: -0.955200 - Temperature: 24.615000
+      Gas: -0.927734 - Temperature: 24.635000
       ...
       ```
 
