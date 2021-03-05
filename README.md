@@ -1,10 +1,9 @@
-Getting Started on Raspberry Pi
-===============================
+# Sensirion Raspberry Pi I2C STC3x Driver
 
 This document explains how to set up the STC3x sensor to run on a Raspberry Pi
 using the provided code.
 
-[<center><img src="images/Stc3x.png" width="300px"></center>](https://www.sensirion.com/en/environmental-sensors/carbon-dioxide-sensors/co2-sensor-stc31-coming-soon/)
+[<center><img src="images/STC3x.png" width="300px"></center>](https://www.sensirion.com/en/environmental-sensors/carbon-dioxide-sensors/co2-sensor-stc31-coming-soon/)
 
 Click [here](https://www.sensirion.com/en/environmental-sensors/carbon-dioxide-sensors/co2-sensor-stc31-coming-soon/) to learn more about the STC3x Sensor.
 
