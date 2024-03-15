@@ -1,7 +1,7 @@
 src_dir = ..
 common_sources = ${src_dir}/sensirion_config.h ${src_dir}/sensirion_common.h ${src_dir}/sensirion_common.c
 i2c_sources = ${src_dir}/sensirion_i2c_hal.h ${src_dir}/sensirion_i2c.h ${src_dir}/sensirion_i2c.c
-driver_sources = ${src_dir}/stc3x_i2c.h ${src_dir}/stc3x_i2c.c
+driver_sources = ${src_dir}/sht4x_i2c.h ${src_dir}/sht4x_i2c.c ${src_dir}/stc3x_i2c.h ${src_dir}/stc3x_i2c.c
 
 i2c_implementation ?= ${src_dir}/sensirion_i2c_hal.c
 

@@ -35,8 +35,21 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+/*
+ * The Eval Kit for STC31-C includes a SHT4x humidity and temperature sensor
+ * that can be used for compensation of the gas concentration signal.
+ *
+ * This example requires the raspberry-pi-i2c-sht4x driver. Download version
+ * 1.0.0 of the driver from github:
+ * https://github.com/Sensirion/raspberry-pi-i2c-sht4x/tree/1.0.0
+ *
+ * And copy the following two files into your source folder:
+ * - sht4x_i2c.h
+ * - sht4x_i2c.c
+ */
 #include "sensirion_common.h"
 #include "sensirion_i2c_hal.h"
+#include "sht4x_i2c.h"
 #include "stc3x_i2c.h"
 #include <inttypes.h>  // PRIx64
 #include <stdio.h>     // printf
@@ -47,20 +60,34 @@ int main(void) {
     int16_t error = NO_ERROR;
     sensirion_i2c_hal_init();
     stc3x_init(STC31_C_I2C_ADDR_29);
+    sht4x_init(SHT40_I2C_ADDR_44);
 
-    uint32_t product_id = 0;
-    uint64_t serial_number = 0;
+    uint32_t stc3x_product_id = 0;
+    uint64_t stc3x_serial_number = 0;
+    uint32_t sht_serial_number = 0;
+
     sensirion_hal_sleep_us(14000);
+
     //
-    // Output the product identifier and serial number
+    // Output the SHT4x serial number
     //
-    error = stc3x_get_product_id(&product_id, &serial_number);
+    error = sht4x_serial_number(&sht_serial_number);
+    if (error != NO_ERROR) {
+        printf("error executing serial_number(): %i\n", error);
+        return error;
+    }
+    printf("serial_number: %u\n", sht_serial_number);
+
+    //
+    // Output STC3x the product identifier and serial number
+    //
+    error = stc3x_get_product_id(&stc3x_product_id, &stc3x_serial_number);
     if (error != NO_ERROR) {
         printf("error executing get_product_id(): %i\n", error);
         return error;
     }
-    printf("Product id = %u\n", product_id);
-    printf("Serial Number = %" PRIx64 "\n", serial_number);
+    printf("Product id = %u\n", stc3x_product_id);
+    printf("Serial Number = %" PRIx64 "\n", stc3x_serial_number);
     //
     // Measure STC31-C CO2 in air in range 0% - 40%
     // or STC31 CO2 in air in range 0% - 25%
@@ -70,11 +97,12 @@ int main(void) {
         printf("error executing set_binary_gas(): %i\n", error);
         return error;
     }
-    //
-    // TODO: Setup SHT4x sensor
-    //
-    float co2_concentration = 0.0;
-    float temperature = 0.0;
+
+    float sht4x_relative_humidity = 0.0;
+    float sht4x_temperature = 0.0;
+    float stc3x_co2_concentration = 0.0;
+    float stc3x_temperature = 0.0;
+
     uint16_t repetition = 0;
     for (repetition = 0; repetition < 100; repetition++) {
         //
@@ -84,21 +112,25 @@ int main(void) {
         //
         // Read humidity and temperature from external SHT4x sensor and use
         // it for compensation.
-        //
-        // TODO: read SHT4x sensor and use values for compensation
-        //
-        error = stc3x_set_relative_humidity(50.0);
+        error = sht4x_measure_high_precision(&sht4x_temperature,
+                                             &sht4x_relative_humidity);
+        if (error != NO_ERROR) {
+            printf("error executing measure_lowest_precision(): %i\n", error);
+            continue;
+        }
+
+        error = stc3x_set_relative_humidity(sht4x_relative_humidity);
         if (error != NO_ERROR) {
             printf("error executing set_relative_humidity(): %i\n", error);
             continue;
         }
-        error = stc3x_set_temperature(50.0);
+        error = stc3x_set_temperature(sht4x_temperature);
         if (error != NO_ERROR) {
             printf("error executing set_temperature(): %i\n", error);
             continue;
         }
-        error =
-            stc3x_measure_gas_concentration(&co2_concentration, &temperature);
+        error = stc3x_measure_gas_concentration(&stc3x_co2_concentration,
+                                                &stc3x_temperature);
         if (error != NO_ERROR) {
             printf("error executing measure_gas_concentration(): %i\n", error);
             continue;
@@ -106,8 +138,8 @@ int main(void) {
         //
         // Print CO2 concentration in Vol% and temperature in degree celsius.
         //
-        printf("CO2 concentration = %.2f\n", co2_concentration);
-        printf("Temperature = %.2f\n", temperature);
+        printf("CO2 concentration = %.2f\n", stc3x_co2_concentration);
+        printf("Temperature = %.2f\n", stc3x_temperature);
     }
 
     return NO_ERROR;
