@@ -139,7 +139,10 @@ int main(void) {
         // Print CO2 concentration in Vol% and temperature in degree celsius.
         //
         printf("CO2 concentration = %.2f\n", stc3x_co2_concentration);
-        printf("Temperature = %.2f\n", stc3x_temperature);
+        printf("Temperature STC3x = %.2f\n", stc3x_temperature);
+        printf("Temperature SHT4x = %.2f\n", sht4x_temperature);
+        printf("Temperature Delta = %.2f\n",
+               stc3x_temperature - sht4x_temperature);
     }
 
     return NO_ERROR;
